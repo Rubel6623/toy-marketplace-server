@@ -29,7 +29,11 @@ async function run() {
     await client.connect();
 
     const toysCollection=client.db('toyCollections').collection('toys');
-    
+    const mathToysCollection=client.db('toyCollections').collection('mathToys');
+    const allToysCollection=client.db('toyCollections').collection('allToys');
+
+
+    // load engineering toys
     app.get('/toys', async(req,res)=>{
         const cursor=toysCollection.find();
         const result= await cursor.toArray();
@@ -46,6 +50,27 @@ async function run() {
 
         const result=await toysCollection.findOne(query);
         res.send(result);
+    })
+
+   // load math toys data
+    app.get('/mathToys', async(req,res)=>{
+        const cursor=mathToysCollection.find();
+        const result= await cursor.toArray();
+        res.send(result);
+    })
+
+    app.get('/mathToys/:id', async(req,res)=>{
+        const id=req.params.id;
+        const query={_id:new ObjectId(id)}
+
+        const result=await mathToysCollection.findOne(query);
+        res.send(result);
+    })
+
+    app.get('/allToys', async(req,res)=>{
+        const cursor=allToysCollection.find();
+        const result=await cursor.toArray();
+        res.send(result)
     })
 
     // Send a ping to confirm a successful connection
