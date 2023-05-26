@@ -44,6 +44,52 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/toy', async(req,res)=>{
+      const cursor=myToysCollection.find();
+      const result=await cursor.toArray();
+      res.send(result);
+    })
+
+    // update toy
+    app.get('/toy/:id', async(req,res)=>{
+      const id=req.params.id;
+      const query={_id:new ObjectId(id)}
+      const result=await myToysCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.put('/toy/:id', async(req,res)=>{
+      const id=req.params.id;
+      const filter={_id:new ObjectId(id)}
+      const option={upsert:true};
+      const updatedToy=req.body;
+      const toy={
+        $set:{
+          toyName:updatedToy.toyName,
+          url:updatedToy.url,
+          price:updatedToy.price,
+          seller:updatedToy.seller,
+          category:updatedToy.category,
+          quantity:updatedToy.quantity,
+          rating:updatedToy.rating,
+          email:updatedToy.email
+        }
+      }
+      const result=await myToysCollection.updateOne(filter,toy,option);
+      res.send(result);
+    })
+
+
+    // delete toy
+    app.delete('/toy/:id', async(req,res)=>{
+      const id=req.params.id;
+      const query={_id:new ObjectId(id)}
+      const result=await myToysCollection.deleteOne(query);
+      res.send(result);
+    })
+
+
+
     // load engineering toys
     app.get('/toys', async(req,res)=>{
         const cursor=toysCollection.find();
