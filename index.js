@@ -28,6 +28,13 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const limit=5;
+    const pipeline=[
+      {
+        $limit:limit
+      }
+    ];
+
     const toysCollection=client.db('toyCollections').collection('toys');
 
     const mathToysCollection=client.db('toyCollections').collection('mathToys');
@@ -126,7 +133,7 @@ async function run() {
 
     app.get('/allToys', async(req,res)=>{
         const cursor=allToysCollection.find();
-        const result=await cursor.toArray();
+        const result=await cursor.limit(20).toArray();
         res.send(result)
     })
 
